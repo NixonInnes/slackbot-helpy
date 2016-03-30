@@ -13,27 +13,30 @@ client = SlackClient(token)
 
 logging.debug(client.api_call('api.test'))
 
-def get_help(query):
-    urls = [
-        "https://docs.python.org/3/library/"+query+".html",
-        "https://docs.python.org/3/reference/"+query+".html"
-        ]
-    for url in urls:
-        req = requests.get(url)
-        if req.ok:
-            break
-    if not req.ok:
-        return "Could not find help on _{}_.".format(query)
-    soup = BeautifulSoup(req.text, 'html.parser')
+def get_search_url(query):
+    query = query.strip().replace(":", "%3A").replace("+", "%2B").replace("&", "%26").replace(" ", "+")
+    return "http://www.google.com/search?hl=en&q=site:docs.python.org/3/+{}".format(query)
+
+def get_html(url):
     try:
-        # This is awful...
-        para = soup.find_all('p')[2].string.strip('\n')
+        request = requests.get(url)
+        return request.text
     except:
-        para = "I couldn't grab any help text, but here's a link..."
-    if len(para) > 250:
-        para = para[:250] + '...'
-    resp = para + "\n" + req.url
-    return resp
+        logging.error("Error accessing:", url)
+        return None
+
+def search(query):
+    url = get_search_url(query)
+    html = get_html(url)
+    if html:
+        soup = BeautifulSoup(html)
+        try:
+            item = soup.find("div", attrs = { "class" : "g" })
+            link = item.find("cite").text
+            desc = item.find("div", attrs = {"class": "_sPg"}) or item.find("span", attrs = { "class" : "st" }).text.strip()
+        except:
+            return "Could not find help on _{}_.".format(query), None
+    return desc, link
 
 if client.rtm_connect():
     while True:
@@ -45,7 +48,8 @@ if client.rtm_connect():
                 if msg.split()[0] == 'helpy':
                     query = ' '.join(msg.split()[1:])
                     try:
-                        resp = get_help(query)
+                        desc, link = search(query)
+                        resp = "{}{}".format(desc, '\n'+link if link is not None else '')
                         client.rtm_send_message(event['channel'], resp)
                     except Exception:
                         log.exception('Error!')
