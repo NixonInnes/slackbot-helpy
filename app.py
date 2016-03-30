@@ -6,7 +6,7 @@ from logging.handlers import RotatingFileHandler
 from bs4 import BeautifulSoup
 from slackclient import SlackClient
 
-handler = RotatingFileHandler('logs/helpy.logs', maxBytes=100000, backupCount=5)
+handler = RotatingFileHandler('logs/helpy.log', maxBytes=100000, backupCount=5)
 logger = logging.getLogger('default')
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
@@ -52,9 +52,9 @@ def main():
             new_events = client.rtm_read()
             for event in new_events:
                 if 'type' in event and 'text' in event and 'channel' in event and event['type'] == 'message':
-                    logger.info('channel: ' + event['channel'] + ', user:' + event['user'] + ', msg:' + event['text'])
                     msg = event['text']
                     if msg.split()[0] == 'helpy':
+                        logger.info('channel: ' + event['channel'] + ', user:' + event['user'] + ', msg:' + event['text'])
                         query = ' '.join(msg.split()[1:])
                         try:
                             desc, link = search(query)
