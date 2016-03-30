@@ -29,7 +29,7 @@ def search(query):
     url = get_search_url(query)
     html = get_html(url)
     if html:
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, 'html.parser')
         try:
             item = soup.find("div", attrs = { "class" : "g" })
             link = item.find("cite").text
