@@ -33,7 +33,7 @@ def search(query):
         try:
             item = soup.find("div", attrs = { "class" : "g" })
             link = item.find("cite").text
-            desc = item.find("div", attrs = {"class": "_sPg"}) or item.find("span", attrs = { "class" : "st" }).text.strip()
+            desc = item.find("div", attrs = {"class": "_sPg"}).text.strip() or item.find("span", attrs = { "class" : "st" }).text.strip()
         except:
             return "Could not find help on _{}_.".format(query), None
     return desc, link
