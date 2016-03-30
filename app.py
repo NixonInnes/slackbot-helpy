@@ -41,6 +41,8 @@ def search(query):
             link = item.find("cite").text
             desc = item.find("div", attrs={"class": "_sPg"}) or item.find("span", attrs={"class": "st"})
             desc = desc.text.replace('\n', '').strip()
+            if desc.split()[3] == '...':
+                desc = ' '.join(desc.split()[4:])
         except:
             return "Could not find help on _{}_.".format(query), None
     return desc, link
