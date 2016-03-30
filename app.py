@@ -21,7 +21,7 @@ def get_help(mod):
     soup = BeautifulSoup(req.text, 'html.parser')
     para = soup.find_all('p')[2].string.strip('\n')
     if len(para) > 250:
-        para = para[:250]
+        para = para[:250] + '...'
     resp = para + "\n" + req.url
     return resp
 
@@ -39,4 +39,3 @@ if client.rtm_connect():
                         client.rtm_send_message(channel, resp)
                     except Exception:
                         log.exception('Error!')
-
