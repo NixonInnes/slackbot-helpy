@@ -9,7 +9,7 @@ log = logging.getLogger('ex')
 
 token = os.environ.get('SLACK_TOKEN')
 client = SlackClient(token)
-channel = 'bot-test'
+channel = 'break_my_bot'
 
 logging.debug(client.api_call('api.test'))
 
