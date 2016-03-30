@@ -19,7 +19,10 @@ def get_help(mod):
     if not req.ok:
         return "Could not find help on _{}_.".format(mod)
     soup = BeautifulSoup(req.text, 'html.parser')
-    resp = soup.find_all('p')[2].string.strip('\n') + "\n" + req.url
+    para = soup.find_all('p')[2].string.strip('\n')
+    if len(para) > 250:
+        para = para[:250]
+    resp = para + "\n" + req.url
     return resp
 
 if client.rtm_connect():
