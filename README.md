@@ -18,5 +18,5 @@ https://docs.python.org/3/library/io.html
 - [beautifulsoup4](https://pypi.python.org/pypi/beautifulsoup4)
 
 ###Installation
-Clone this repository, or download the archive. You will need to set an environment variable 'SLACK_TOKEN', for the bot to use (available in your slack channel configuration).  
+Clone this repository, or download the archive. You will need to create an environment variable 'SLACK_TOKEN' containing your token for the bot, available from your slack team configuration options.  
 Create a new folder, called *logs*, in the same directory as *app.py*, and now all you need to do is run `python app.py`.
