@@ -47,12 +47,12 @@ def search(query):
 
 def main():
     client = SlackClient(token)
-    logger.debug(client.api_call('api.test'))
+    logger.info(client.api_call('api.test'))
     if client.rtm_connect():
         while True:
             new_events = client.rtm_read()
             for event in new_events:
-                if 'type' in event and 'text' in event and 'channel' in event and event['type'] == 'message':
+                if 'type' in event and 'text' in event and 'channel' in event and 'user' in event and event['type'] == 'message':
                     msg = event['text']
                     if msg.split()[0] == 'helpy':
                         logger.info('channel: ' + event['channel'] + ', user:' + event['user'] + ', msg:' + event['text'])
