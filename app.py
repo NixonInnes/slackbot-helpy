@@ -12,10 +12,6 @@ logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 token = os.environ.get('SLACK_TOKEN')
-client = SlackClient(token)
-
-logger.debug(client.api_call('api.test'))
-
 
 def get_search_url(query):
     query = query.strip().replace(":", "%3A").replace("+", "%2B").replace("&", "%26").replace(" ", "+")
@@ -49,6 +45,8 @@ def search(query):
 
 
 def main():
+    client = SlackClient(token)
+    logger.debug(client.api_call('api.test'))
     if client.rtm_connect():
         while True:
             new_events = client.rtm_read()
@@ -65,6 +63,8 @@ def main():
                         except Exception:
                             logger.exception('Error!')
                 time.sleep(1)
+    else:
+        logger.error("Could not connect!")
 
 
 if __name__ == '__main__':
