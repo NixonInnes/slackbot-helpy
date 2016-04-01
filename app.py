@@ -13,6 +13,9 @@ if os.path.exists('.env'):
         if len(var) == 2:
             os.environ[var[0]] = var[1]
 
+if not os.path.isdir('logs'):
+    os.makedirs('logs')
+
 handler = RotatingFileHandler('logs/helpy.log', maxBytes=100000, backupCount=5)
 logger = logging.getLogger('default')
 logger.setLevel(logging.INFO)
