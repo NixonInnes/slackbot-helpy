@@ -7,6 +7,12 @@ from logging.handlers import RotatingFileHandler
 from bs4 import BeautifulSoup
 from slackclient import SlackClient
 
+if os.path.exists('.env'):
+    for line in open('.env'):
+        var = line.strip().split('=')
+        if len(var) == 2:
+            os.environ[var[0]] = var[1]
+
 handler = RotatingFileHandler('logs/helpy.log', maxBytes=100000, backupCount=5)
 logger = logging.getLogger('default')
 logger.setLevel(logging.INFO)
