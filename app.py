@@ -41,12 +41,15 @@ def search(query):
     url = get_search_url(query)
     json = get_json(url)
     if json['Heading']:
+        head = json['Heading']
+        head = head.replace(' (Python)', '')
         desc = json['Abstract']
+        desc = desc.replace('</', '{').replace('<', '{'). replace('>', '}')
+        desc = desc.format(br='\n>', b='*', u='_', pre='', code='```')
         link = json['AbstractURL']
-        desc = desc.replace('<br>', '\n')
     else:
-        return "Could not find help on _{}_.".format(query), None
-    return desc, link
+        return "Sorry!", "Could not find help on _{}_.".format(query), None
+    return head, desc, link
 
 
 def main():
@@ -62,8 +65,8 @@ def main():
                         logger.info('channel: ' + event['channel'] + ', user:' + event['user'] + ', msg:' + event['text'])
                         query = ' '.join(msg.split()[1:])
                         try:
-                            desc, link = search(query)
-                            resp = "{}{}".format(desc, '\n' + link if link is not None else '')
+                            head, desc, link = search(query)
+                            resp = "*{}*\n>{}{}".format(head, desc, '\n' + link if link is not None else '')
                             client.rtm_send_message(event['channel'], resp)
                         except Exception:
                             logger.exception('Error!')
