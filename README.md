@@ -1,6 +1,6 @@
 # slackbot-helpy
 Helpy is a bot user for [slack](https://slack.com/).  
-It will take queries from users and search the Python 3 documentation for an appropriate link. It will return a short paragraph and link to the documentation.  
+It will take queries from users and search the Python & PyPi documentation for an appropriate link. It will return a short paragraph and link to the documentation.  
 
 ## Use
 Invite helpy into your slack channel, or private message it.  
