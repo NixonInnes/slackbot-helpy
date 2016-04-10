@@ -41,8 +41,9 @@ def search(query):
     url = get_search_url(query)
     json = get_json(url)
     if json['Heading']:
-        desc = json['AbstractText']
+        desc = json['Abstract']
         link = json['AbstractURL']
+        desc = desc.replace('<br>', '\n')
     else:
         return "Could not find help on _{}_.".format(query), None
     return desc, link
