@@ -4,7 +4,6 @@ import time
 import logging
 import requests
 from logging.handlers import RotatingFileHandler
-from bs4 import BeautifulSoup
 from slackclient import SlackClient
 
 if os.path.exists('.env'):
@@ -23,6 +22,7 @@ logger.addHandler(handler)
 
 token = os.environ.get('SLACK_TOKEN')
 
+
 def get_search_url(query):
     query = query.strip().replace(":", "%3A").replace("+", "%2B").replace("&", "%26").replace(" ", "+")
     return "https://api.duckduckgo.com?q=python+{}&format=json".format(query)
@@ -32,8 +32,9 @@ def get_json(url):
     try:
         request = requests.get(url).json()
         return request
-    except:
-        logger.error("Error accessing:", url)
+    except Exception as e:
+        logger.error("URL Error:", url)
+        logger.error(e)
         return None
 
 
@@ -68,8 +69,9 @@ def main():
                             head, desc, link = search(query)
                             resp = "*{}*\n>{}{}".format(head, desc, '\n' + link if link is not None else '')
                             client.rtm_send_message(event['channel'], resp)
-                        except Exception:
-                            logger.exception('Error!')
+                        except Exception as e:
+                            logger.error('Runtime Error:')
+                            logger.error(e)
                 time.sleep(1)
     else:
         logger.error("Could not connect!")
