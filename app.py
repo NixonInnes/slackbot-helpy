@@ -16,13 +16,13 @@ token = os.environ.get('SLACK_TOKEN')
 
 def get_search_url(query):
     query = query.strip().replace(":", "%3A").replace("+", "%2B").replace("&", "%26").replace(" ", "+")
-    return "http://www.google.com/search?hl=en&q=site:docs.python.org/3/+{}".format(query)
+    return "https://api.duckduckgo.com?q=python+{}&format=json".format(query)
 
 
-def get_html(url):
+def get_json(url):
     try:
-        request = requests.get(url)
-        return request.text
+        request = requests.get(url).json()
+        return request
     except:
         logger.error("Error accessing:", url)
         return None
@@ -30,18 +30,12 @@ def get_html(url):
 
 def search(query):
     url = get_search_url(query)
-    html = get_html(url)
-    if html:
-        soup = BeautifulSoup(html, 'html.parser')
-        try:
-            item = soup.find("div", attrs={"class": "g"})
-            link = item.find("cite").text
-            desc = item.find("div", attrs={"class": "_sPg"}) or item.find("span", attrs={"class": "st"})
-            desc = desc.text.replace('\n', '').strip()
-            if desc.split()[3] == '...':
-                desc = ' '.join(desc.split()[4:])
-        except:
-            return "Could not find help on _{}_.".format(query), None
+    json = get_json(url)
+    if json['Heading']:
+        desc = json['AbstractText']
+        link = json['AbstractURL']
+    else:
+        return "Could not find help on _{}_.".format(query), None
     return desc, link
 
 
